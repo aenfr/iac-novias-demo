@@ -58,12 +58,6 @@
   .brand-store{font-family:var(--font-display);font-weight:500;font-size:20px;letter-spacing:.01em;color:var(--ink);white-space:nowrap;line-height:1}
   .brand-sep{align-self:center;width:1px;height:13px;background:var(--hair)}
   .brand-text{font-weight:500;letter-spacing:.26em;font-size:9.5px;text-transform:uppercase;color:var(--ink-3)}
-  .topbar-right{display:flex;align-items:center;gap:9px}
-  .set-chip{display:inline-flex;align-items:center;gap:11px;font-size:12.5px;color:var(--ink-2);background:var(--glass);border:1px solid var(--glass-stroke);-webkit-backdrop-filter:var(--glass-blur-sm);backdrop-filter:var(--glass-blur-sm);padding:7px 14px;border-radius:999px;box-shadow:var(--glass-hi);transition:transform .2s var(--ease-standard)}
-  .set-chip .grp{display:inline-flex;align-items:center;gap:5px}
-  .set-chip svg{width:13px;height:13px}.set-chip .h{color:var(--rose-deep)}.set-chip .q{color:var(--plum)}
-  .set-chip b{font-weight:600;color:var(--ink)}
-  .pulse{animation:pulse .4s var(--ease-standard)}
   @keyframes pulse{0%{transform:scale(1)}45%{transform:scale(1.08)}100%{transform:scale(1)}}
   .spec-btn{display:inline-flex;align-items:center;gap:6px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;color:var(--ink-2);background:var(--surface);border:1px solid var(--hair);padding:6px 11px;border-radius:9px;cursor:pointer;transition:all .18s var(--ease-standard);white-space:nowrap}
   .spec-btn:hover{border-color:var(--rose);color:var(--rose-deep)}
@@ -403,7 +397,6 @@
     .topbar{padding:10px 14px;gap:8px}
     .brand-store{font-size:17px}
     .brand-text{letter-spacing:.2em}
-    .set-chip{padding:8px 12px}
     .stage-wrap{margin-top:28px;padding:0 14px 110px}
     .card{padding:26px 20px 26px;border-radius:var(--r-lg)}
     .agent-line{font-size:clamp(23px,6.6vw,30px);margin-bottom:24px}
@@ -450,12 +443,6 @@
   <div class="pipe" id="pipe">
     <button class="pipe-icon" id="pipeIcon" aria-label="Tu cita, paso a paso"><svg class="ring-svg" viewBox="0 0 36 36"><circle class="trk" cx="18" cy="18" r="15"></circle><circle class="prg" cx="18" cy="18" r="15"></circle></svg><span class="pn" id="pipeNum">1</span></button>
     <nav class="funnel" id="funnel" aria-label="Tu cita, fases"></nav>
-  </div>
-  <div class="topbar-right">
-    <div class="set-chip" id="setChip" title="Tus vestidos para probar">
-      <span class="grp h"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 10 6c-2.5 4.4-10 9-10 9Z"/></svg><b id="hCount">0</b></span>
-      <span class="grp q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg><b id="qCount">0</b></span>
-    </div>
   </div>
 </header>
 
@@ -674,15 +661,6 @@ function setStatus(t,think){agentStatusText=t;agentThink=!!think;
   const s=canvas.querySelector('.ch-status .txt');if(s)s.textContent=t;
   const o=canvas.querySelector('.card-head .orb');if(o)o.classList.toggle('think',!!think);}
 function toast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove('show'),2300);}
-function updateSet(){document.getElementById('hCount').textContent=state.hearts.length;document.getElementById('qCount').textContent=state.maybes.length;const c=document.getElementById('setChip');c.classList.remove('pulse');void c.offsetWidth;c.classList.add('pulse');}
-function flyToSet(src){
-  if(reduce){updateSet();return;}
-  const t=document.getElementById('setChip').getBoundingClientRect(),s=src.getBoundingClientRect(),clone=src.cloneNode(true);
-  clone.style.cssText=`position:fixed;left:${s.left}px;top:${s.top}px;width:${s.width}px;height:${s.height}px;border-radius:9px;z-index:99;transition:all .26s var(--ease-standard);pointer-events:none;box-shadow:var(--shadow-lg)`;
-  document.body.appendChild(clone);
-  requestAnimationFrame(()=>{clone.style.left=t.right-28+'px';clone.style.top=t.top+'px';clone.style.width='18px';clone.style.height='22px';clone.style.opacity='.2';});
-  setTimeout(()=>{clone.remove();updateSet();},280);
-}
 function tpl(s){if(!s)return s;const names=state.hearts.map(id=>dressById(id).name);
   const sl=names.length?(names.length>1?names.slice(0,-1).join(', ')+' y '+names.slice(-1):names[0]):'tus vestidos';
   return s.replace('{{shortlist}}',sl).replace('{{slot}}',state.slot||'Sat 11:00 am');}
@@ -826,12 +804,12 @@ COMP.Gallery={
       </div></article>`;}).join('')}</div>`;},
   mount(scope,c,ctx){scope.addEventListener('click',e=>{const b=e.target.closest('[data-a],[data-r],[data-q]');if(!b)return;
     const id=b.dataset.id,cd=scope.querySelector('#c-'+id),d=dressById(id);
-    if(b.dataset.a==='like'){const wasLiked=state.hearts.includes(id);state.maybes=state.maybes.filter(x=>x!==id);if(wasLiked){state.hearts=state.hearts.filter(x=>x!==id);cd.classList.remove('liked');updateSet();ctx.emit('shortlist');return;}state.hearts.push(id);cd.classList.add('liked');cd.classList.remove('maybe');flyToSet(cd.querySelector('.dimg'));toast(d.name+' va a tu set');ctx.dispatch({type:'shortlist.add',token:'shortlist.add',value:d.name});ctx.emit('shortlist');}
-    else if(b.dataset.a==='maybe'){state.hearts=state.hearts.filter(x=>x!==id);if(!state.maybes.includes(id))state.maybes.push(id);cd.classList.add('maybe');cd.classList.remove('liked');flyToSet(cd.querySelector('.dimg'));toast(d.name+' lo guardo cerca');ctx.dispatch({type:'shortlist.maybe',token:'shortlist.add',value:d.name});ctx.emit('shortlist');}
+    if(b.dataset.a==='like'){const wasLiked=state.hearts.includes(id);state.maybes=state.maybes.filter(x=>x!==id);if(wasLiked){state.hearts=state.hearts.filter(x=>x!==id);cd.classList.remove('liked');ctx.emit('shortlist');return;}state.hearts.push(id);cd.classList.add('liked');cd.classList.remove('maybe');toast(d.name+' va a tu set');ctx.dispatch({type:'shortlist.add',token:'shortlist.add',value:d.name});ctx.emit('shortlist');}
+    else if(b.dataset.a==='maybe'){state.hearts=state.hearts.filter(x=>x!==id);if(!state.maybes.includes(id))state.maybes.push(id);cd.classList.add('maybe');cd.classList.remove('liked');toast(d.name+' lo guardo cerca');ctx.dispatch({type:'shortlist.maybe',token:'shortlist.add',value:d.name});ctx.emit('shortlist');}
     else if(b.dataset.a==='no'){cd.classList.toggle('rejecting');cd.classList.remove('asking','showing-data');}
     else if(b.dataset.a==='ask'){cd.classList.toggle('asking');cd.classList.remove('rejecting','showing-data');}
     else if(b.dataset.a==='data'){cd.classList.toggle('showing-data');cd.classList.remove('rejecting','asking');}
-    else if(b.dataset.r){state.hearts=state.hearts.filter(x=>x!==id);state.maybes=state.maybes.filter(x=>x!==id);state.rejected.push({dress:d.name,reason:b.dataset.r});updateSet();ctx.emit('shortlist');ctx.dispatch({type:'shortlist.reject',token:'shortlist.reject',value:d.name+' · '+b.dataset.r});cd.classList.add('leaving');toast('Anotado. Menos "'+b.dataset.r.toLowerCase()+'"');setTimeout(()=>cd.style.display='none',200);}
+    else if(b.dataset.r){state.hearts=state.hearts.filter(x=>x!==id);state.maybes=state.maybes.filter(x=>x!==id);state.rejected.push({dress:d.name,reason:b.dataset.r});ctx.emit('shortlist');ctx.dispatch({type:'shortlist.reject',token:'shortlist.reject',value:d.name+' · '+b.dataset.r});cd.classList.add('leaving');toast('Anotado. Menos "'+b.dataset.r.toLowerCase()+'"');setTimeout(()=>cd.style.display='none',200);}
     else if(b.dataset.q){const box=cd.querySelector('.askbox'),a=ANSWERS[b.dataset.q];if(box.querySelector('.aans'))box.querySelector('.aans').remove();const ans=document.createElement('div');ans.className='aans';ans.innerHTML=`${a[0]}<span class="src">${a[1]}</span>`;box.appendChild(ans);state.asked.push({dress:d.name,q:b.dataset.q});ctx.dispatch({type:'catalog.query',token:'catalog.query',value:d.name+': '+b.dataset.q});}});}
 };
 COMP.ContinueBar={

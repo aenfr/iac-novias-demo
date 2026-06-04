@@ -630,9 +630,9 @@ const FLOW={
         {q:'¿Qué presupuesto te va bien?',token:'bant.budget',options:['Hasta 2.000 €','2.000 € a 2.500 €','Flexible por el bueno']},
         {q:'¿Qué hora te viene mejor?',token:'bant.need',options:['Vie 18:00','Sáb 11:00','Sáb 14:30','Dom 10:00']}
      ]}}],next:'book'},
-    {id:'book',title:'Reserva tu hora',short:'Elige hora',icon:'brief',status:'lista para reservar',
+    {id:'book',title:'Reserva tu cita',short:'Confirmar',chapterTitle:'Revisa y reserva',icon:'brief',status:'lista para reservar',
      intent:{goal:'reservar tu set',gate:'reservar',confidence:{label:'Lista para reservar',value:.95}},
-     agent:'Aquí tienes tu reserva. Resérvala y lo dejamos todo preparado antes de que llegues.',
+     agent:'Tu cita es el **{{slot}}**. Esto es lo que dejamos preparado para ti — confírmalo y todo estará listo antes de que llegues.',
      surface:[
        {type:'BookingSummary',token:'approval.reserve',props:{}},
        {type:'ButtonRow',token:'approval.reserve',emits:'approval.granted',gate:true,summary:'reservar · {{slot}}',
@@ -952,7 +952,7 @@ function paint(i){
   setTimeout(doReveal,reduce?80:6000); // safety net only — normally the reveal waits for the typewriter
 }
 /* ---- chapter interstitials (explainer-video dynamics) ---- */
-const CHSUB={enter:'me alegra acompañarte hoy',read:'busco lo que se repite',mirror:'lo que veo en ti',match:'de esta tienda, para ti',studio:'tú marcas el ritmo',fit:'unos datos para el día',book:'guardamos tu hora',brief:'tu estilista ya te espera'};
+const CHSUB={enter:'me alegra acompañarte hoy',read:'busco lo que se repite',mirror:'lo que veo en ti',match:'de esta tienda, para ti',studio:'tú marcas el ritmo',fit:'unos datos para el día',book:'tu hora ya está elegida',brief:'tu estilista ya te espera'};
 const LOADERS=new Set(['read']);
 const chapterEl=document.getElementById('chapter');
 function runLoader(host,steps,onDone){

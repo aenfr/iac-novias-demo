@@ -773,7 +773,7 @@ COMP.TasteMap={
     const sig=TASTE.signals.map(s=>`<div class="sigrow" data-sig="${s.label}"><span class="sig-name">${s.label}</span><span class="sig-track"><span class="sig-fill" data-v="${s.value}"></span></span><span class="sig-val">${s.value}%</span><button class="sig-x" aria-label="Quitar ${s.label}">${xSvg}</button></div>`).join('');
     const avoid=state.avoid.map(t=>`<span class="chip avoid">${t}${xSvg}</span>`).join('');
     const doubts=TASTE.doubts.map((d,i)=>`<div class="doubt" data-doubt="${i}"><span class="doubt-q">${d.q}</span><span class="doubt-opts"><button class="doubt-opt" data-pick="${d.a}">${d.a}</button><button class="doubt-opt" data-pick="${d.b}">${d.b}</button></span></div>`).join('');
-    const ZONES=['Tripita','Escote','Brazos','Espalda','Caderas','Piernas'];
+    const ZONES=['Cintura','Escote','Brazos','Espalda','Caderas','Piernas'];
     const shape=ZONES.map(z=>{const v=state.shape[z];return `<div class="shaperow" data-zone="${z}"><span class="shape-name">${z}</span><span class="shape-opts"><button class="shape-opt${v==='lucir'?' sel':''}" data-v="lucir">Lucir</button><button class="shape-opt${v==='suavizar'?' sel':''}" data-v="suavizar">Suavizar</button></span></div>`;}).join('');
     return `<div class="tmap"${tkAttr(c.token)}>
       <div class="tmap-hint stagger"><span class="hx">${xSvg}</span><span>Toca la <b>✕</b> para quitar lo que no seas tú. Lo demás, déjalo como está.</span></div>

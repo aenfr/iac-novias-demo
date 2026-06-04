@@ -200,7 +200,7 @@
   .btn-ghost{background:var(--glass);-webkit-backdrop-filter:var(--glass-blur-sm);backdrop-filter:var(--glass-blur-sm);color:var(--ink);border-color:var(--glass-stroke);box-shadow:var(--glass-hi)}
   .btn-ghost:hover{background:rgba(255,255,255,.62);border-color:rgba(255,255,255,.9);transform:translateY(-1px)}
   .btn:focus-visible,.opt:focus-visible,.chip:focus-visible,.act:focus-visible,.dropzone:focus-visible,.askq:focus-visible,.reason:focus-visible,.fnode:focus-visible,.pipe-icon:focus-visible{outline:none;box-shadow:0 0 0 2px #fff,0 0 0 4px var(--rose)}
-  .act-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+  .act-row{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;justify-content:center}
 
   .tk{position:relative}
   .tk::after{content:attr(data-token);position:absolute;top:-7px;right:8px;font-family:ui-monospace,monospace;font-size:8.5px;letter-spacing:.03em;color:var(--ink-3);background:var(--surface);border:1px solid var(--hair-2);padding:1px 6px;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none}
@@ -331,7 +331,8 @@
   .ev-note{display:flex;gap:8px;font-size:12px;color:var(--ink);line-height:1.45;background:var(--rose-soft);border-radius:8px;padding:10px 12px}
   .ev-note svg{width:13px;height:13px;color:var(--rose-deep);flex:0 0 13px;margin-top:2px}
   .ev-src{font-size:10px;letter-spacing:.04em;color:var(--ink-3);font-family:ui-monospace,monospace}
-  .matchfoot{padding-top:26px;margin-top:2px}
+  .matchfoot{padding-top:26px;margin-top:2px;display:flex;justify-content:center}
+  .cmp-toggle-row{display:flex;justify-content:center}
 
   .cmp-wrap{background:var(--glass-2);-webkit-backdrop-filter:var(--glass-blur-sm);backdrop-filter:var(--glass-blur-sm);border:1px solid var(--glass-stroke);border-radius:var(--r-md);box-shadow:var(--glass-shadow-sm),var(--glass-hi);overflow:hidden;margin-bottom:14px}
   .cmp{width:100%;border-collapse:collapse;font-size:12px}
@@ -841,7 +842,7 @@ COMP.ContinueBar={
     btn.onclick=()=>ctx.dispatch({type:c.emits,token:c.token,gate:c.gate,summary:(state.hearts.map(id=>dressById(id).name).join(' & ')||'my picks'),value:state.hearts.join(',')});}
 };
 COMP.CompareToggle={
-  render(c){return `<div class="stagger"${tkAttr(c.token)}><button class="btn btn-ghost" data-cmp>${c.props.label}</button><div class="cmp-host" style="margin-top:14px"></div></div>`;},
+  render(c){return `<div class="stagger"${tkAttr(c.token)}><div class="cmp-toggle-row"><button class="btn btn-ghost" data-cmp>${c.props.label}</button></div><div class="cmp-host" style="margin-top:14px"></div></div>`;},
   mount(scope,c,ctx){const btn=scope.querySelector('[data-cmp]'),host=scope.querySelector('.cmp-host');
     btn.onclick=()=>{if(host.dataset.open)return;host.dataset.open=1;btn.style.display='none';
       host.innerHTML=`<div class="cmp-wrap"><table class="cmp">

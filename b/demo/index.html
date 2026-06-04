@@ -273,6 +273,14 @@
   .doubt-opts{display:flex;gap:8px;flex-wrap:wrap}
   .doubt-opt{font-size:12.5px;padding:8px 15px;border-radius:999px;border:1px solid var(--hair);background:rgba(255,255,255,.5);color:var(--ink);cursor:pointer;transition:all .16s var(--ease-standard)}
   .doubt-opt:hover{border-color:var(--ink);background:rgba(255,255,255,.75)}
+  .shape{display:flex;flex-direction:column;gap:10px}
+  .shaperow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:9px 14px;border-radius:12px;background:var(--glass);-webkit-backdrop-filter:var(--glass-blur-sm);backdrop-filter:var(--glass-blur-sm);border:1px solid var(--glass-stroke);box-shadow:var(--glass-hi)}
+  .shape-name{font-size:13.5px;color:var(--ink);flex:1 1 auto;letter-spacing:-.005em}
+  .shape-opts{display:flex;gap:8px;flex:0 0 auto}
+  .shape-opt{font-size:12.5px;padding:8px 14px;border-radius:999px;border:1px solid var(--hair);background:rgba(255,255,255,.5);color:var(--ink-2);cursor:pointer;transition:all .16s var(--ease-standard)}
+  .shape-opt:hover{border-color:var(--ink);color:var(--ink)}
+  .shape-opt.sel[data-v="lucir"]{background:var(--rose-soft);border-color:var(--rose);color:var(--rose-deep)}
+  .shape-opt.sel[data-v="suavizar"]{background:var(--surface-2);border-color:var(--plum);color:var(--plum)}
   .tmap-summary{font-family:var(--font-display);font-style:italic;font-size:19px;line-height:1.42;color:var(--ink);border-left:2px solid var(--rose);padding-left:16px;margin-top:2px}
 
   .opts{display:flex;flex-wrap:wrap;gap:11px}
@@ -428,7 +436,7 @@
     .ev-facts{grid-template-columns:1fr}
     .tmap-sec h4{margin-bottom:12px}
     .sig-name{flex-basis:96px}
-    .doubt-opt{min-height:40px;display:inline-flex;align-items:center}
+    .doubt-opt,.shape-opt{min-height:40px;display:inline-flex;align-items:center}
     .sig-x{width:36px;height:36px}
     .opt{min-height:48px;display:inline-flex;align-items:center}
     .ch-skip{bottom:max(24px,env(safe-area-inset-bottom,0px))}
@@ -668,7 +676,7 @@ const state={bride:'Sofía',hearts:[],maybes:[],slot:null,
   rejected:[], asked:[],
   signals:TASTE.signals.map(s=>s.label),
   avoid:TASTE.avoid.slice(),
-  resolved:[]};
+  resolved:[], shape:{}};
 const EVENTLOG=[]; const sessionStart=Date.now();
 
 /* ---------- helpers ---------- */
@@ -765,11 +773,14 @@ COMP.TasteMap={
     const sig=TASTE.signals.map(s=>`<div class="sigrow" data-sig="${s.label}"><span class="sig-name">${s.label}</span><span class="sig-track"><span class="sig-fill" data-v="${s.value}"></span></span><span class="sig-val">${s.value}%</span><button class="sig-x" aria-label="Quitar ${s.label}">${xSvg}</button></div>`).join('');
     const avoid=state.avoid.map(t=>`<span class="chip avoid">${t}${xSvg}</span>`).join('');
     const doubts=TASTE.doubts.map((d,i)=>`<div class="doubt" data-doubt="${i}"><span class="doubt-q">${d.q}</span><span class="doubt-opts"><button class="doubt-opt" data-pick="${d.a}">${d.a}</button><button class="doubt-opt" data-pick="${d.b}">${d.b}</button></span></div>`).join('');
+    const ZONES=['Cintura','Escote','Brazos','Espalda','Caderas','Piernas'];
+    const shape=ZONES.map(z=>{const v=state.shape[z];return `<div class="shaperow" data-zone="${z}"><span class="shape-name">${z}</span><span class="shape-opts"><button class="shape-opt${v==='lucir'?' sel':''}" data-v="lucir">Lucir</button><button class="shape-opt${v==='suavizar'?' sel':''}" data-v="suavizar">Suavizar</button></span></div>`;}).join('');
     return `<div class="tmap"${tkAttr(c.token)}>
       <div class="tmap-hint stagger"><span class="hx">${xSvg}</span><span>Toca la <b>✕</b> para quitar lo que no seas tú. Lo demás, déjalo como está.</span></div>
       <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--rose)"></span>Lo que se repite</h4><div class="sigs">${sig}<button class="chip chip-add sig-add">+ añadir</button></div></div>
       <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--ink-3)"></span>Lo que estoy evitando</h4><div class="chips avoidchips">${avoid}</div></div>
       <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--gold)"></span>Dudas de Lucía</h4><p class="sec-hint">Elige la opción que más te define.</p><div class="doubts">${doubts}</div></div>
+      <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--plum)"></span>Tu figura, a tu favor</h4><p class="sec-hint">Entre nosotras, sin juicios. Cuéntale qué te apetece lucir y qué prefieres llevar con más discreción. Opcional — si no, te leo igual.</p><div class="shape">${shape}</div></div>
       <p class="tmap-summary stagger">${TASTE.summary}</p></div>`;},
   mount(scope,c,ctx){const xSvg='<svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>';
     const fillBars=()=>scope.querySelectorAll('.sig-fill').forEach(f=>{f.style.transform='scaleX('+(parseInt(f.dataset.v,10)/100)+')';});
@@ -778,6 +789,7 @@ COMP.TasteMap={
     const wireAvoidX=chip=>{chip.onclick=()=>{const lab=chip.textContent.trim();state.avoid=state.avoid.filter(a=>a!==lab);ctx.dispatch({type:'taste.adjust',token:c.token,value:'– evitar '+lab});chip.classList.add('chip-out');setTimeout(()=>chip.remove(),180);};};
     scope.querySelectorAll('.avoidchips .chip').forEach(wireAvoidX);
     scope.querySelectorAll('.doubt').forEach(d=>{d.querySelectorAll('.doubt-opt').forEach(b=>b.onclick=()=>{const pick=b.dataset.pick;state.resolved.push({q:TASTE.doubts[+d.dataset.doubt].q,a:pick});if(!state.signals.includes(pick))state.signals.push(pick);ctx.dispatch({type:'taste.signal',token:c.token,value:pick});toast('Anotado: '+pick);d.classList.add('chip-out');setTimeout(()=>d.remove(),220);});});
+    scope.querySelectorAll('.shaperow').forEach(rw=>{const zone=rw.dataset.zone;rw.querySelectorAll('.shape-opt').forEach(b=>b.onclick=()=>{const v=b.dataset.v;if(state.shape[zone]===v){delete state.shape[zone];b.classList.remove('sel');ctx.dispatch({type:'taste.signal',token:c.token,value:'– '+zone});}else{state.shape[zone]=v;rw.querySelectorAll('.shape-opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');ctx.dispatch({type:'taste.signal',token:c.token,value:(v==='lucir'?'lucir · ':'suavizar · ')+zone});}});});
     const add=scope.querySelector('.sig-add');
     if(add)add.onclick=()=>{const row=add.parentElement;const inp=document.createElement('input');inp.type='text';inp.className='chip chip-inp';inp.placeholder='añade una señal…';add.replaceWith(inp);inp.focus();
       const finish=commit=>{const v=inp.value.trim();if(commit&&v){const el=document.createElement('div');el.className='sigrow';el.dataset.sig=v;el.innerHTML=`<span class="sig-name">${v}</span><span class="sig-track"><span class="sig-fill" data-v="62"></span></span><span class="sig-val">62%</span><button class="sig-x" aria-label="Quitar ${v}">${xSvg}</button>`;row.insertBefore(el,inp);el.querySelector('.sig-x').onclick=()=>{state.signals=state.signals.filter(s=>s!==v);el.classList.add('chip-out');setTimeout(()=>el.remove(),200);};state.signals.push(v);ctx.dispatch({type:'taste.adjust',token:c.token,value:'+ '+v});requestAnimationFrame(()=>requestAnimationFrame(()=>{el.querySelector('.sig-fill').style.transform='scaleX(0.62)';}));}inp.replaceWith(add);};
@@ -884,6 +896,8 @@ COMP.Confirm={
 };
 COMP.Brief={
   render(c){const {pre,keep}=pickSets();
+    const shapeZ=Object.keys(state.shape),lucir=shapeZ.filter(z=>state.shape[z]==='lucir'),suav=shapeZ.filter(z=>state.shape[z]==='suavizar');
+    const shapeSec=(lucir.length||suav.length)?`<div class="bsec"><h4>Su figura, a su favor</h4><div class="btags">${lucir.map(z=>`<span class="btag">Lucir · ${z}</span>`).join('')}${suav.map(z=>`<span class="btag">Suavizar · ${z}</span>`).join('')}</div></div>`:'';
     const fitColor=f=>f==='Encaja mucho'?'var(--rose-deep)':f==='Comodín'?'var(--plum)':f==='Posible reserva'?'var(--ink-3)':'var(--gold)';
     const row=(id,pip)=>{const d=dressById(id);return `<div class="brow"><span class="pip" style="background:${pip||fitColor(d.fit)}"></span><b>${d.name}</b><span style="color:var(--ink-3);font-size:11px">· ${d.fit}</span></div>`;};
     const preRows=pre.map(id=>row(id)).join('');
@@ -896,6 +910,7 @@ COMP.Brief={
       <div class="bsec"><h4>Preparados para ti</h4>${preRows}</div>
       <div class="bsec"><h4>Quizás, también a mano</h4>${keepRows}</div>
       <div class="bsec"><h4>A evitar</h4><div class="btags"><span class="btag">Mucho encaje</span><span class="btag">Brillos</span><span class="btag">Mangas boho</span></div></div>
+      ${shapeSec}
       <div class="bsec"><h4>Notas para tu estilista</h4>${notes}</div>
       <div class="bsec"><h4>Preguntas por confirmar</h4><div class="btags"><span class="btag">¿Mangas en ${firstName}?</span><span class="btag">Plazo para julio</span></div></div></div>`;},mount(){}
 };
@@ -1032,7 +1047,7 @@ function buildAppointmentPayload(){
     bride:state.bride, slot:state.slot,
     liked:names(state.hearts), maybe:names(state.maybes),
     rejected:state.rejected,
-    style_signals:state.signals, avoid:state.avoid, resolved_doubts:state.resolved,
+    style_signals:state.signals, avoid:state.avoid, resolved_doubts:state.resolved, shape:state.shape,
     open_questions:state.asked,
     stylist_notes:state.hearts.concat(state.maybes).map(id=>({dress:dressById(id).name,note:(TRUST[id]||{}).note})).filter(n=>n.note),
     generated_at:new Date().toISOString()

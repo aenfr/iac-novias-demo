@@ -802,7 +802,7 @@ COMP.Gallery={
         <div class="ddesigner">${d.dz}</div>
         <div class="dname">${d.name}</div>
         <div class="dfacts"><span class="dprice">${d.price}</span><span class="dsil">${sil}</span></div>
-        <div class="dtrust"><span class="davail"><span class="tdot"></span>${t.available}</span><span class="dtsep">·</span><span>${t.lead}</span></div>
+        <div class="dtrust"><span class="davail"><span class="tdot"></span>${t.available}</span><span class="dtsep">·</span><span>listo en ${t.lead}</span></div>
         <p class="dwhy"><span class="wlab">Por qué encaja</span>${d.why[0]}</p>
         <p class="dwatch"><span class="wlab">A tener en cuenta</span>${d.watch}</p>
         <div class="dacts">
@@ -816,7 +816,7 @@ COMP.Gallery={
         <div class="evidence">
           <div class="ev-h">Por qué la elegí</div>
           <ul class="ev-why">${d.why.map(w=>`<li>${icoCheck}${w}</li>`).join('')}</ul>
-          <div class="ev-facts"><span><b>Disponibilidad</b>${t.available}</span><span><b>Plazo</b>${t.lead}</span><span><b>Silueta</b>${sil}</span><span><b>Precio</b>${d.price}</span></div>
+          <div class="ev-facts"><span><b>Disponibilidad</b>${t.available}</span><span><b>Plazo de entrega</b>${t.lead}</span><span><b>Silueta</b>${sil}</span><span><b>Precio</b>${d.price}</span></div>
           <div class="ev-h">A tener en cuenta</div>
           <p class="ev-watch">${d.watch} ${t.alteration?'· '+t.alteration:''}</p>
           <div class="ev-note">${ICONS.brief}<span>${t.note||''}</span></div>

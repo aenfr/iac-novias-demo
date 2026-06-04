@@ -414,7 +414,7 @@
 <script>
 const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const canvas=document.getElementById('canvas'), card=document.getElementById('card');
-let agentStatusText='tu concierge · lista', agentThink=false;
+let agentStatusText='tu asesora · lista', agentThink=false;
 
 const DRESSES=[
   {id:'zohra',name:'Zohra',dz:'Aire Barcelona',price:'1.900 € – 2.300 €',
@@ -487,7 +487,7 @@ const icoCheck='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 const FLOW={
   protocol:'a2ui/0.1', session:'novia_sess_456', flow:'iac.novias.setter',
   stages:[
-    {id:'enter',title:'Trae tu inspiración',short:'Tu tablero',icon:'board',status:'tu concierge · lista',
+    {id:'enter',title:'Trae tu inspiración',short:'Tu tablero',chapterTitle:'Hola, Sofía',icon:'board',status:'tu asesora · lista',
      intent:{goal:'recoger tu inspiración',gate:'subir',confidence:null},
      agent:'Trae lo que te enamora. Te lo convierto en vestidos que **puedes probar aquí**. No es un test.',
      surface:[
@@ -808,7 +808,7 @@ function paint(i){
   setTimeout(doReveal,reduce?80:6000); // safety net only — normally the reveal waits for the typewriter
 }
 /* ---- chapter interstitials (explainer-video dynamics) ---- */
-const CHSUB={enter:'empezamos por tu inspiración',read:'busco lo que se repite',mirror:'lo que veo en ti',match:'de esta tienda, para ti',studio:'tú marcas el ritmo',fit:'unos datos para el día',book:'guardamos tu hora',brief:'tu estilista ya te espera'};
+const CHSUB={enter:'me alegra acompañarte hoy',read:'busco lo que se repite',mirror:'lo que veo en ti',match:'de esta tienda, para ti',studio:'tú marcas el ritmo',fit:'unos datos para el día',book:'guardamos tu hora',brief:'tu estilista ya te espera'};
 const LOADERS=new Set(['read']);
 const chapterEl=document.getElementById('chapter');
 function runLoader(host,steps,onDone){
@@ -831,7 +831,7 @@ function playChapter(i,onHidden){
   tEl.innerHTML='';sEl.textContent='';sEl.classList.remove('in');stepsHost.innerHTML='';
   tEl.style.display='';sEl.style.display='';inner.style.opacity='';stepsHost.style.display='none';
   chapterEl.classList.add('on');document.documentElement.classList.add('ch-lock');chapterEl.setAttribute('aria-hidden','false');
-  setTimeout(()=>revealText(tEl,st.short||st.title,null),reduce?0:240);
+  setTimeout(()=>revealText(tEl,st.chapterTitle||st.short||st.title,null),reduce?0:240);
   setTimeout(()=>{sEl.textContent=CHSUB[st.id]||'';sEl.classList.add('in');},reduce?0:560);
   let hidden=false;
   const hide=()=>{if(hidden)return;hidden=true;chapterEl.onclick=null;chapterEl.classList.remove('on');document.documentElement.classList.remove('ch-lock');chapterEl.setAttribute('aria-hidden','true');setTimeout(()=>onHidden&&onHidden(),reduce?60:360);};

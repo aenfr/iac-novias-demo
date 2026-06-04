@@ -776,11 +776,11 @@ COMP.TasteMap={
     const ZONES=['Cintura','Escote','Brazos','Espalda','Caderas','Piernas'];
     const shape=ZONES.map(z=>{const v=state.shape[z];return `<div class="shaperow" data-zone="${z}"><span class="shape-name">${z}</span><span class="shape-opts"><button class="shape-opt${v==='lucir'?' sel':''}" data-v="lucir">Lucir</button><button class="shape-opt${v==='suavizar'?' sel':''}" data-v="suavizar">Suavizar</button></span></div>`;}).join('');
     return `<div class="tmap"${tkAttr(c.token)}>
-      <div class="tmap-hint stagger"><span class="hx">${xSvg}</span><span>Toca la <b>✕</b> para quitar lo que no seas tú. Lo demás, déjalo como está.</span></div>
+      <div class="tmap-hint stagger"><span class="hx">${xSvg}</span><span>Toca la <b>✕</b> en lo que no seas tú y lo quito. Lo demás lo dejo tal cual.</span></div>
       <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--rose)"></span>Lo que se repite</h4><div class="sigs">${sig}<button class="chip chip-add sig-add">+ añadir</button></div></div>
-      <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--ink-3)"></span>Lo que estoy evitando</h4><div class="chips avoidchips">${avoid}</div></div>
-      <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--gold)"></span>Dudas de Lucía</h4><p class="sec-hint">Elige la opción que más te define.</p><div class="doubts">${doubts}</div></div>
-      <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--plum)"></span>Tu figura, a tu favor</h4><p class="sec-hint">Entre nosotras, sin juicios. Cuéntale qué te apetece lucir y qué prefieres llevar con más discreción. Opcional — si no, te leo igual.</p><div class="shape">${shape}</div></div>
+      <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--ink-3)"></span>Lo que estás evitando</h4><div class="chips avoidchips">${avoid}</div></div>
+      <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--gold)"></span>Mis dudas</h4><p class="sec-hint">Dime la que más te define.</p><div class="doubts">${doubts}</div></div>
+      <div class="tmap-sec stagger"><h4><span class="pip" style="background:var(--plum)"></span>Tu figura, a tu favor</h4><p class="sec-hint">Entre nosotras, sin juicios. Cuéntame qué te apetece lucir y qué prefieres llevar con más discreción. Es opcional — si no, te leo igual.</p><div class="shape">${shape}</div></div>
       <p class="tmap-summary stagger">${TASTE.summary}</p></div>`;},
   mount(scope,c,ctx){const xSvg='<svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>';
     const fillBars=()=>scope.querySelectorAll('.sig-fill').forEach(f=>{f.style.transform='scaleX('+(parseInt(f.dataset.v,10)/100)+')';});
